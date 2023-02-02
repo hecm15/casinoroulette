@@ -1,0 +1,138 @@
+{% extends "layout.html" %}
+{% block body %}
+    <body>
+        <div class="register">
+            <form id="signupform" action="/register" method="post">
+                    <input class="registerinput" type="text" autocomplete="off" name="username" id="username" placeholder="Username"> 
+                    <input class="registerinput" type="text" autocomplete="off" name="password" id="password" placeholder="Password">
+                    <input class="registerinput" type="text" autocomplete="off" name="confirmation" id="confirmation" placeholder="Confirm Password">
+                    
+					<div><button class="registerinput" type="submit" id="registerbtn" disabled="disabled">Register</button></div>
+					<div>
+						<p id="msg"></p>
+						<p id="msg2"></p>
+					</div>
+            </form>
+        </div>
+
+    </body>
+
+    <script type="text/javascript">
+
+		$(document).ready(function() {
+			var ready1
+			var ready2
+
+			$("#username").on('input', function(e) {
+				$('#msg').hide();
+				
+				if ($('#username').val() == null || $('#username').val() == "") {
+					$('#msg').show();
+					$("#msg").html("Username is a required field.").css("color", "red");
+					$('#registerbtn').attr('disabled', 'disabled');
+					ready1 = false;
+				} else {
+					$.ajax({
+						type: "POST",
+						url: "/user_check",
+						data: $('#signupform').serialize(),
+						dataType: "json",
+						cache: false,
+						success: function(msg) {
+							$('#msg').show();
+							$("#msg").html(msg);
+							console.log(msg);
+							if (msg == "<span style='color:red;'>Username unavailable</span>") {
+								ready1 = false;
+							} else if (msg == "<span style='color:green;'>Username available</span>"){
+								ready1 = true;
+							}
+							console.log(ready1);
+						},
+						error: function(jqXHR, textStatus, errorThrown) {
+							$('#msg').show();
+							$("#msg").html(textStatus + " " + errorThrown);
+						}
+					});
+				}
+			});
+			
+
+            $("#password").on('input', function(e) {
+				$('#msg2').hide();
+				
+				if ($('#password').val() == null || $('#password').val() == "") {
+					$('#msg2').show();
+					$("#msg2").html("Password is a required field.").css("color", "red");
+					$('#registerbtn').attr('disabled', 'disabled');
+					ready2 = false;
+				} else {
+					$.ajax({
+						type: "POST",
+						url: "/password_check",
+						data: $('#signupform').serialize(),
+						dataType: "json",
+						cache: false,
+						success: function(msg) {
+							$('#msg2').show();
+							$("#msg2").html(msg);
+							if(msg == '<span style=\'color:red;\'>Passwords do not match</span>'){
+								ready2 = false;
+							} else if(msg == '<span style=\'color:green;\'>Passwords are a match.</span>'){
+								ready2 = true;
+							}
+							console.log(ready2);
+						},
+						error: function(jqXHR, textStatus, errorThrown) {
+							$('#msg2').show();
+							$("#msg2").html(textStatus + " " + errorThrown);
+						}
+					});
+				}
+			});
+
+            $("#confirmation").on('input', function(e) {
+				$('#msg2').hide();
+				
+				if ($('#confirmation').val() == null || $('#confirmation').val() == "") {
+					$('#msg2').show();
+					$("#msg2").html("Confirmation Password is a required field.").css("color", "red");
+					$('#registerbtn').attr('disabled', 'disabled');
+					ready2 = false;
+				} else {
+					$.ajax({
+						type: "POST",
+						url: "/password_check",
+						data: $('#signupform').serialize(),
+						dataType: "json",
+						cache: false,
+						success: function(msg) {
+							$('#msg2').show();
+							$("#msg2").html(msg);
+							if(msg == '<span style=\'color:red;\'>Passwords do not match</span>'){
+								ready2 = false;
+							} else if(msg == '<span style=\'color:green;\'>Passwords are a match.</span>'){
+								ready2 = true;
+							}
+
+						},
+						error: function(jqXHR, textStatus, errorThrown) {
+							$('#msg2').show();
+							$("#msg2").html(textStatus + " " + errorThrown);
+						}
+					});
+				}
+			});
+
+			$('#signupform input[type=text]').on('keyup', function(e){
+				if (ready1 && ready2){
+				$('#registerbtn').removeAttr('disabled');
+			} else{
+				$('#registerbtn').attr('disabled', 'disabled');
+			}
+
+			})
+		});
+	</script>
+
+{% endblock %}

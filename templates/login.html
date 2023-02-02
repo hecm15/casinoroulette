@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+    <div class="login">
+        <form id="loginform" action="/login" method="post">
+           <input class="logininput loginform" type="text" autocomplete="off" name="username" id="username" placeholder="Username">
+           <input class="logininput loginform" type="password" autocomplete="off" name="password" id="password" placeholder="Password">
+           <div><button class="logininput" type="submit" id="loginbtn" disabled="disabled">Log In</button></div>
+           <div>
+            <p id="incorrect"> 
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for message in messages%}
+                            {{message}}         
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                </p>
+         </div>
+        </form>
+    </div>
+
+    <script type="text/javascript">
+        // continue here, disable login untill all fields filled
+        $(document).ready(function(){
+           
+            var filled1 = false;
+            var filled2 = false;
+
+            $('#username').on('input', function(e){
+
+                if($('#username').val().length == 0){
+                    filled1 = false;
+                }
+                else{
+                    filled1 = true;
+                }
+            })
+            
+            $('#password').on('input', function(e){
+
+                if( $('#password').val().length == 0){
+                    filled2 = false;
+                } else{
+                    filled2 = true;
+                }
+            })
+
+            $('#loginform input').keyup(function(e){
+
+                if (filled1 && filled2){
+                    $('#loginbtn').removeAttr('disabled');
+                }else {
+                    $('#loginbtn').attr('disabled', 'disabled');
+                }
+            })
+
+})
+    </script>
+{% endblock %}

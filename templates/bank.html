@@ -1,0 +1,118 @@
+{% extends "layout.html" %} 
+
+{% block body %} 
+
+<div class="bankdiv">
+    <div class="bank">
+        <p class="currentbal"> Current Balance: <span id="curval" > {{currentval}} </span></p>
+        <form id="bank-form" action="/bank" method="post">
+                <select name="transaction" style="padding: 8px 18px; margin-right: 2%;">
+                    <option disabled selected> Deposit/Withdraw </option>
+                    <option> Deposit </option>
+                    <option> Withdraw </option>
+                </select>
+                <input style="padding: 8px 12px;" name="amount" id="amount" placeholder="Amount $" type ="number" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" name="itemConsumption">
+                <div style="margin-top:2%"><button id="bank-btn" type="submit" disabled="disabled"> Submit </button></div>
+                <div><p id="msg3"></p></div>
+        </form>
+
+        <div>
+            <p> 
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages%}
+                        {{message}}         
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        var selected = false;
+        var filled = false;
+
+        $("select").on("change", function(e){
+            selected = true;
+
+            if (selected && filled){
+                $('#bank-btn').removeAttr('disabled');
+
+                $.ajax({
+                    type: "POST",
+                    url: "/bank_check",
+                    data: $('#bank-form').serialize(),
+                    dataType: "json",
+                    cache: false,
+                    success: function(msg){
+                        $('#msg3').show();
+                        $('#msg3').html(msg);
+
+                        if (msg == '<span style=\'color:red;\'>You do not have the funds to satisfy this withdrawl.</span>'){
+                            $('#bank-btn').attr('disabled', 'disabled');
+                        }
+                        else{
+                            $('#bank-btn').removeAttr('disabled');
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+							$('#msg2').show();
+							$("#msg2").html(textStatus + " " + errorThrown);
+						}
+                });
+            } else{
+                $('#bank-btn').attr('disabled', 'disabled');
+            }
+            
+        });
+
+
+        $("#amount").on('keyup', function(e) {
+
+            if ($('#amount').val() == null || $('#amount').val() == ""){
+                $('#bank-btn').attr('disabled', 'disabled');
+                filled = false;
+            } else{
+
+                filled = true;
+            }
+
+            if (selected && filled){
+                $('#bank-btn').removeAttr('disabled');
+
+                $.ajax({
+                    type: "POST",
+                    url: "/bank_check",
+                    data: $('#bank-form').serialize(),
+                    dataType: "json",
+                    cache: false,
+                    success: function(msg){
+                        $('#msg3').show();
+                        $('#msg3').html(msg);
+
+                        if (msg == '<span style=\'color:red;\'>You do not have the funds to satisfy this withdrawl.</span>'){
+                            $('#bank-btn').attr('disabled', 'disabled');
+                        }
+                        else{
+                            $('#bank-btn').removeAttr('disabled');
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+							$('#msg2').show();
+							$("#msg2").html(textStatus + " " + errorThrown);
+						}
+                });
+            } else{
+                $('#bank-btn').attr('disabled', 'disabled');
+            }
+
+        });
+
+    });
+
+</script>
+
+{% endblock %} 

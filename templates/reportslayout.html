@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+	<html>
+		<head>
+			<meta http-equiv="content-type" content="text/html; charset=utf-8">
+			<title>Javascript Roulette</title>
+			<meta name="title" content="Javascript Roulette">
+			<meta name="description" content="A fully functioning roulette game made using Javascript and CSS">
+			<meta name="author" content="ozboware">
+			<meta property="og:url" content="/">
+			<meta property="og:title" content="Javascript Roulette">
+			<meta property="og:description" content="A fully functioning roulette game made using Javascript and CSS">
+			<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        	<script src="https://code.jquery.com/jquery-migrate-3.1.0.min.js"></script>
+        	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+			<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+			<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+
+			<link href="../static/appstyle.css" rel="stylesheet" type="text/css">
+            <link href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+
+		</head>
+
+		<body>
+			<nav> 
+
+				<div class="nav" style="width: auto">
+					{% if session["user_id"] %}
+					<ul>
+						<li id="game"><a href="/"> Game </a> </li>
+						<li id="bank"><a href="/bank"> Bank </a> </li>
+						<li id ="spinreports"><a href='/spinreports'> Spin Reports </a></li>
+						<li id ="betreports"><a href='/betreports'> Bet Reports </a></li>
+						<li id ="transactionreports"><a href='/transactionreports'> Transaction Reports </a></li>
+						<li id="logout"><a href="/logout">Log Out</a></li>
+						
+					</ul>
+					{% else %}
+					<ul>
+						<li class="loginnav"><a href="/register"> Register </a></li>
+						<li class="loginnav"><a href="/login"> Log In</a></li>
+					</ul>
+					{% endif %}
+				</div>
+
+			</nav>
+			{% block body %}  {%endblock%}
+		</body>
+	</html>
